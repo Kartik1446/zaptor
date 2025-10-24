@@ -98,7 +98,7 @@ console.log("Filtered (> 2):", filtered);
   ]);
   
   const [activeFileId, setActiveFileId] = useState<string>('1');
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const theme = 'dark'; // Fixed to dark theme
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [fontSize, setFontSize] = useState(14);
@@ -519,15 +519,7 @@ console.log("Filtered (> 2):", filtered);
         </div>
         
         <div className="flex items-center space-x-2">
-          <button
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className={`p-2 rounded hover:bg-opacity-80 ${
-              theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
-            }`}
-            title="Toggle Theme"
-          >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
+
           <button
             onClick={() => setShowSettings(!showSettings)}
             className={`p-2 rounded hover:bg-opacity-80 ${

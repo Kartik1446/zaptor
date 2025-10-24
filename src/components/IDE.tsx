@@ -25,7 +25,7 @@ interface FileNode {
 }
 
 const IDE: React.FC = () => {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const theme = 'dark'; // Fixed to dark theme
   const [showTerminal, setShowTerminal] = useState(false);
   const [showFileExplorer, setShowFileExplorer] = useState(true);
   const [showSearch, setShowSearch] = useState(false);
@@ -92,9 +92,7 @@ const IDE: React.FC = () => {
     }
   }, [files]);
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
-  };
+
 
   // Menu functions
   const handleNewFile = () => {
@@ -385,11 +383,7 @@ const IDE: React.FC = () => {
                     }`}>
                     {wordWrap ? '✓' : '  '} Word Wrap
                   </button>
-                  <hr className={`my-1 ${theme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`} />
-                  <button onClick={() => { toggleTheme(); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                    }`}>
-                    Toggle Theme
-                  </button>
+
                 </div>
               )}
             </div>
@@ -458,10 +452,9 @@ const IDE: React.FC = () => {
             <TerminalIcon size={18} />
           </button>
           <button
-            onClick={toggleTheme}
             className={`p-2 rounded hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
               }`}
-            title="Toggle Theme"
+            title="Settings"
           >
             <Settings size={18} />
           </button>
