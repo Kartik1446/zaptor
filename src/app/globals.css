@@ -60,3 +60,103 @@ body {
 .light-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
+
+/* Monaco Editor black background override */
+.monaco-editor,
+.monaco-editor .monaco-editor-background,
+.monaco-editor .inputarea.ime-input {
+  background-color: #000000 !important;
+}
+
+.monaco-editor .view-overlays .current-line {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.monaco-editor .margin {
+  background-color: #000000 !important;
+}
+
+.monaco-editor .monaco-scrollable-element>.scrollbar>.scroller {
+  background-color: #000000 !important;
+}
+
+/* Monaco Editor view-lines (actual code area) black background */
+.monaco-editor .view-lines,
+.monaco-editor .view-line {
+  background-color: #000000 !important;
+}
+
+.monaco-editor .lines-content {
+  background-color: #000000 !important;
+}
+
+/* Monaco Editor minimap black background */
+.monaco-editor .minimap,
+.monaco-editor .minimap-slider,
+.monaco-editor .minimap-decorations-layer,
+.monaco-editor .minimap canvas {
+  background-color: #000000 !important;
+}
+
+.monaco-editor .minimap-shadow-hidden {
+  background-color: #000000 !important;
+}
+
+/* Monaco Editor separator lines */
+.monaco-editor .view-ruler,
+.monaco-editor .margin-view-overlays .line-numbers,
+.monaco-editor .margin-view-overlays {
+  background-color: #000000 !important;
+}
+
+/* Monaco Editor text selection and cursor fixes */
+.monaco-editor .selected-text,
+.monaco-editor .view-overlays .current-line-both,
+.monaco-editor .view-overlays .current-line-margin,
+.monaco-editor .view-overlays .current-line-margin-both {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.monaco-editor .focused .selected-text {
+  background-color: #264f78 !important;
+}
+
+.monaco-editor .view-overlays .selection {
+  background-color: #264f78 !important;
+}
+
+.monaco-editor .view-cursors .cursor {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+/* Terminal resize handle */
+.terminal-resize-handle {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.terminal-resize-handle:hover::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 3px;
+  background-color: currentColor;
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+.terminal-resize-handle:active {
+  background-color: #3b82f6 !important;
+}
+
+/* Prevent text selection during resize */
+.terminal-resizing {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+}

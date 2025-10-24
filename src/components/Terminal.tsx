@@ -36,9 +36,12 @@ const Terminal: React.FC<TerminalProps> = ({ theme, isVisible, onClose }) => {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [currentDirectory, setCurrentDirectory] = useState('/workspace');
+  const [terminalHeight, setTerminalHeight] = useState(320); // 320px = h-80
+  const [isResizing, setIsResizing] = useState(false);
   
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const resizeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isVisible && inputRef.current) {
@@ -51,6 +54,44 @@ const Terminal: React.FC<TerminalProps> = ({ theme, isVisible, onClose }) => {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
   }, [lines]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+      
+      const windowHeight = window.innerHeight;
+      const newHeight = windowHeight - e.clientY;
+      const minHeight = 150; // Increased minimum height
+      const maxHeight = windowHeight * 0.8;
+      
+      setTerminalHeight(Math.max(minHeight, Math.min(maxHeight, newHeight)));
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+      document.body.style.cursor = 'default';
+      document.body.style.userSelect = 'auto';
+      document.body.classList.remove('terminal-resizing');
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'ns-resize';
+      document.body.style.userSelect = 'none';
+      document.body.classList.add('terminal-resizing');
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
+
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+  };
 
   const addLine = (content: string, type: 'input' | 'output' | 'error' = 'output') => {
     const newLine: TerminalLine = {
@@ -263,12 +304,25 @@ const Terminal: React.FC<TerminalProps> = ({ theme, isVisible, onClose }) => {
   if (!isVisible) return null;
 
   return (
-    <div className={`h-80 border-t flex flex-col ${
-      theme === 'dark' ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-300'
-    }`}>
+    <div 
+      className={`border-t flex flex-col ${
+        theme === 'dark' ? 'bg-black border-gray-700' : 'bg-white border-gray-300'
+      }`}
+      style={{ height: `${terminalHeight}px` }}
+    >
+      {/* Resize Handle */}
+      <div
+        ref={resizeRef}
+        onMouseDown={handleResizeStart}
+        className={`h-1 cursor-ns-resize terminal-resize-handle transition-colors ${
+          theme === 'dark' ? 'bg-gray-600 hover:bg-blue-400' : 'bg-gray-300 hover:bg-blue-500'
+        } ${isResizing ? 'bg-blue-500' : ''}`}
+        title="Drag to resize terminal"
+      />
+      
       {/* Terminal Header */}
       <div className={`flex items-center justify-between px-3 py-2 border-b ${
-        theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-gray-100 border-gray-300'
+        theme === 'dark' ? 'bg-black border-gray-700' : 'bg-gray-100 border-gray-300'
       }`}>
         <div className="flex items-center space-x-2">
           <TerminalIcon size={16} />

@@ -59,7 +59,7 @@ const SearchPanel: React.FC<SearchPanelProps> = ({ theme, isVisible, onClose }) 
 
   return (
     <div className={`w-80 border-r h-full overflow-y-auto ${
-      theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-300'
+      theme === 'dark' ? 'bg-black border-gray-700' : 'bg-gray-50 border-gray-300'
     }`}>
       {/* Header */}
       <div className={`flex items-center justify-between p-3 border-b ${

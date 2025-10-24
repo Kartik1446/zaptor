@@ -236,7 +236,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ onFileSelect, theme }) => {
 
   return (
     <div className={`h-full w-64 border-r overflow-y-auto ${
-      theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-300'
+      theme === 'dark' ? 'bg-black border-gray-700' : 'bg-gray-50 border-gray-300'
     }`}>
       <div className={`p-2 border-b font-semibold text-sm ${
         theme === 'dark' ? 'border-gray-700' : 'border-gray-300'
