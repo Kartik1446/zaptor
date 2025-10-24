@@ -99,7 +99,7 @@ const IDE: React.FC = () => {
         theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-gray-100 border-gray-300'
       }`}>
         <div className="flex items-center space-x-4">
-          <h1 className="text-lg font-bold">Code Editor IDE</h1>
+          <h1 className="text-lg font-bold">Zaptor</h1>
           <div className="flex items-center space-x-2 text-sm">
             <span className={`px-2 py-1 rounded ${
               theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'

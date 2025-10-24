@@ -14,7 +14,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Code Editor IDE",
+  title: "Zaptor",
   description: "A fully-featured online code editor with syntax highlighting, file management, and terminal",
 };
 
