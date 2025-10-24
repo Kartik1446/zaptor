@@ -43,6 +43,8 @@ const IDE: React.FC = () => {
   const [showMinimap, setShowMinimap] = useState(true);
   const [showLineNumbers, setShowLineNumbers] = useState(true);
   const [wordWrap, setWordWrap] = useState(false);
+  const [fileExplorerWidth, setFileExplorerWidth] = useState(256); // 256px = w-64
+  const [isResizingFileExplorer, setIsResizingFileExplorer] = useState(false);
 
   const handleFileSelect = useCallback((fileNode: FileNode) => {
     if (fileNode.type === 'file' && fileNode.content !== undefined) {
@@ -151,7 +153,7 @@ const IDE: React.FC = () => {
       a.download = activeFile.name;
       a.click();
       URL.revokeObjectURL(url);
-      setFiles(prev => prev.map(file => 
+      setFiles(prev => prev.map(file =>
         file.id === activeFileId ? { ...file, isModified: false } : file
       ));
     }
@@ -207,6 +209,44 @@ const IDE: React.FC = () => {
     };
   }, [activeDropdown]);
 
+  // File Explorer resize functionality
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizingFileExplorer) return;
+
+      const newWidth = e.clientX;
+      const minWidth = 200;
+      const maxWidth = window.innerWidth * 0.5; // Max 50% of window width
+
+      setFileExplorerWidth(Math.max(minWidth, Math.min(maxWidth, newWidth)));
+    };
+
+    const handleMouseUp = () => {
+      setIsResizingFileExplorer(false);
+      document.body.style.cursor = 'default';
+      document.body.style.userSelect = 'auto';
+      document.body.classList.remove('file-explorer-resizing');
+    };
+
+    if (isResizingFileExplorer) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+      document.body.classList.add('file-explorer-resizing');
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizingFileExplorer]);
+
+  const handleFileExplorerResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizingFileExplorer(true);
+  };
+
   return (
     <div className={`h-screen flex flex-col ${theme === 'dark' ? 'bg-black text-white' : 'bg-white text-gray-900'
       }`}>
@@ -219,47 +259,43 @@ const IDE: React.FC = () => {
             alt="Zaptor Logo"
             className="w-12 h-12 ml-1"
           />
-          <h1 className="text-lg font-bold">Zaptor</h1>
+          <div className="flex flex-col">
+            <h1 className="text-xl font-bold">Zaptor</h1>
+            <span className="text-xs opacity-70">by Kartik Bhardwaj</span>
+          </div>
           <div className="flex items-center space-x-2 text-sm relative">
             {/* File Menu */}
             <div className="relative">
               <button
                 onClick={() => handleDropdownClick('file')}
-                className={`px-3 py-1 rounded hover:bg-opacity-80 ${
-                  theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'
-                } ${activeDropdown === 'file' ? (theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300') : ''}`}
+                className={`px-3 py-1 rounded hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'
+                  } ${activeDropdown === 'file' ? (theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300') : ''}`}
               >
                 File
               </button>
               {activeDropdown === 'file' && (
-                <div className={`absolute top-full left-0 mt-1 w-48 rounded shadow-lg border z-50 ${
-                  theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'
-                }`}>
-                  <button onClick={handleNewFile} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                <div className={`absolute top-full left-0 mt-1 w-48 rounded shadow-lg border z-50 ${theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'
                   }`}>
+                  <button onClick={handleNewFile} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     New File <span className="float-right text-xs opacity-60">Ctrl+N</span>
                   </button>
-                  <button onClick={handleOpenFile} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={handleOpenFile} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Open File <span className="float-right text-xs opacity-60">Ctrl+O</span>
                   </button>
                   <hr className={`my-1 ${theme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`} />
-                  <button onClick={handleSaveFile} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={handleSaveFile} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Save <span className="float-right text-xs opacity-60">Ctrl+S</span>
                   </button>
-                  <button onClick={() => {}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Save As <span className="float-right text-xs opacity-60">Ctrl+Shift+S</span>
                   </button>
                   <hr className={`my-1 ${theme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`} />
-                  <button onClick={handleCloseFile} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={handleCloseFile} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Close File <span className="float-right text-xs opacity-60">Ctrl+W</span>
                   </button>
                 </div>
@@ -270,51 +306,42 @@ const IDE: React.FC = () => {
             <div className="relative">
               <button
                 onClick={() => handleDropdownClick('edit')}
-                className={`px-3 py-1 rounded hover:bg-opacity-80 ${
-                  theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'
-                } ${activeDropdown === 'edit' ? (theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300') : ''}`}
+                className={`px-3 py-1 rounded hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'
+                  } ${activeDropdown === 'edit' ? (theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300') : ''}`}
               >
                 Edit
               </button>
               {activeDropdown === 'edit' && (
-                <div className={`absolute top-full left-0 mt-1 w-48 rounded shadow-lg border z-50 ${
-                  theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'
-                }`}>
-                  <button onClick={() => {document.execCommand('undo'); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                <div className={`absolute top-full left-0 mt-1 w-48 rounded shadow-lg border z-50 ${theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'
                   }`}>
+                  <button onClick={() => { document.execCommand('undo'); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Undo <span className="float-right text-xs opacity-60">Ctrl+Z</span>
                   </button>
-                  <button onClick={() => {document.execCommand('redo'); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { document.execCommand('redo'); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Redo <span className="float-right text-xs opacity-60">Ctrl+Y</span>
                   </button>
                   <hr className={`my-1 ${theme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`} />
-                  <button onClick={() => {document.execCommand('cut'); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { document.execCommand('cut'); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Cut <span className="float-right text-xs opacity-60">Ctrl+X</span>
                   </button>
-                  <button onClick={() => {document.execCommand('copy'); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { document.execCommand('copy'); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Copy <span className="float-right text-xs opacity-60">Ctrl+C</span>
                   </button>
-                  <button onClick={() => {document.execCommand('paste'); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { document.execCommand('paste'); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Paste <span className="float-right text-xs opacity-60">Ctrl+V</span>
                   </button>
                   <hr className={`my-1 ${theme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`} />
-                  <button onClick={() => {setShowSearch(true); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { setShowSearch(true); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Find <span className="float-right text-xs opacity-60">Ctrl+F</span>
                   </button>
-                  <button onClick={() => {setShowSearch(true); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { setShowSearch(true); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Replace <span className="float-right text-xs opacity-60">Ctrl+H</span>
                   </button>
                 </div>
@@ -325,51 +352,42 @@ const IDE: React.FC = () => {
             <div className="relative">
               <button
                 onClick={() => handleDropdownClick('view')}
-                className={`px-3 py-1 rounded hover:bg-opacity-80 ${
-                  theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'
-                } ${activeDropdown === 'view' ? (theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300') : ''}`}
+                className={`px-3 py-1 rounded hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'
+                  } ${activeDropdown === 'view' ? (theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300') : ''}`}
               >
                 View
               </button>
               {activeDropdown === 'view' && (
-                <div className={`absolute top-full left-0 mt-1 w-48 rounded shadow-lg border z-50 ${
-                  theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'
-                }`}>
-                  <button onClick={() => {setShowFileExplorer(!showFileExplorer); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                <div className={`absolute top-full left-0 mt-1 w-48 rounded shadow-lg border z-50 ${theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'
                   }`}>
+                  <button onClick={() => { setShowFileExplorer(!showFileExplorer); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     {showFileExplorer ? '✓' : '  '} File Explorer
                   </button>
-                  <button onClick={() => {setShowSearch(!showSearch); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { setShowSearch(!showSearch); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     {showSearch ? '✓' : '  '} Search Panel
                   </button>
-                  <button onClick={() => {setShowTerminal(!showTerminal); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { setShowTerminal(!showTerminal); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     {showTerminal ? '✓' : '  '} Terminal
                   </button>
                   <hr className={`my-1 ${theme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`} />
-                  <button onClick={() => {setShowMinimap(!showMinimap); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { setShowMinimap(!showMinimap); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     {showMinimap ? '✓' : '  '} Minimap
                   </button>
-                  <button onClick={() => {setShowLineNumbers(!showLineNumbers); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { setShowLineNumbers(!showLineNumbers); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     {showLineNumbers ? '✓' : '  '} Line Numbers
                   </button>
-                  <button onClick={() => {setWordWrap(!wordWrap); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { setWordWrap(!wordWrap); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     {wordWrap ? '✓' : '  '} Word Wrap
                   </button>
                   <hr className={`my-1 ${theme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`} />
-                  <button onClick={() => {toggleTheme(); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { toggleTheme(); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Toggle Theme
                   </button>
                 </div>
@@ -380,30 +398,25 @@ const IDE: React.FC = () => {
             <div className="relative">
               <button
                 onClick={() => handleDropdownClick('run')}
-                className={`px-3 py-1 rounded hover:bg-opacity-80 ${
-                  theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'
-                } ${activeDropdown === 'run' ? (theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300') : ''}`}
+                className={`px-3 py-1 rounded hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-600' : 'hover:bg-gray-300'
+                  } ${activeDropdown === 'run' ? (theme === 'dark' ? 'bg-gray-600' : 'bg-gray-300') : ''}`}
               >
                 Run
               </button>
               {activeDropdown === 'run' && (
-                <div className={`absolute top-full left-0 mt-1 w-48 rounded shadow-lg border z-50 ${
-                  theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'
-                }`}>
-                  <button onClick={handleRunCode} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                <div className={`absolute top-full left-0 mt-1 w-48 rounded shadow-lg border z-50 ${theme === 'dark' ? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-300'
                   }`}>
+                  <button onClick={handleRunCode} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Run Code <span className="float-right text-xs opacity-60">F5</span>
                   </button>
-                  <button onClick={() => {console.clear(); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { console.clear(); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Clear Console
                   </button>
                   <hr className={`my-1 ${theme === 'dark' ? 'border-gray-600' : 'border-gray-300'}`} />
-                  <button onClick={() => {setShowTerminal(true); setActiveDropdown(null);}} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${
-                    theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                  }`}>
+                  <button onClick={() => { setShowTerminal(true); setActiveDropdown(null); }} className={`w-full text-left px-3 py-2 hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}>
                     Open Terminal
                   </button>
                 </div>
@@ -459,10 +472,25 @@ const IDE: React.FC = () => {
       <div className={`flex flex-1 overflow-hidden ${theme === 'dark' ? 'bg-black' : 'bg-white'}`}>
         {/* File Explorer Sidebar */}
         {showFileExplorer && (
-          <FileExplorer
-            onFileSelect={handleFileSelect}
-            theme={theme}
-          />
+          <div className="flex">
+            <div
+              className={`overflow-y-auto border-r ${theme === 'dark' ? 'bg-black border-black' : 'bg-gray-50 border-gray-300'
+                }`}
+              style={{ width: `${fileExplorerWidth}px` }}
+            >
+              <FileExplorer
+                onFileSelect={handleFileSelect}
+                theme={theme}
+              />
+            </div>
+            {/* Resize Handle */}
+            <div
+              onMouseDown={handleFileExplorerResizeStart}
+              className={`w-1 cursor-ew-resize file-explorer-resize-handle transition-colors ${theme === 'dark' ? 'bg-gray-600 hover:bg-blue-400' : 'bg-gray-300 hover:bg-blue-500'
+                } ${isResizingFileExplorer ? 'bg-blue-500' : ''}`}
+              title="Drag to resize file explorer"
+            />
+          </div>
         )}
 
         {/* Search Panel */}

@@ -160,3 +160,34 @@ body {
   -moz-user-select: none !important;
   -ms-user-select: none !important;
 }
+
+/* File Explorer resize handle */
+.file-explorer-resize-handle {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.file-explorer-resize-handle:hover::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 40px;
+  background-color: currentColor;
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+.file-explorer-resize-handle:active {
+  background-color: #3b82f6 !important;
+}
+
+/* Prevent text selection during file explorer resize */
+.file-explorer-resizing {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+}

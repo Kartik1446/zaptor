@@ -21,7 +21,7 @@ const Terminal: React.FC<TerminalProps> = ({ theme, isVisible, onClose }) => {
     {
       id: '1',
       type: 'output',
-      content: 'Welcome to Code Editor Terminal v1.0.0',
+      content: 'Welcome to Zapterminal ghost',
       timestamp: new Date()
     },
     {
@@ -31,14 +31,14 @@ const Terminal: React.FC<TerminalProps> = ({ theme, isVisible, onClose }) => {
       timestamp: new Date()
     }
   ]);
-  
+
   const [currentInput, setCurrentInput] = useState('');
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [currentDirectory, setCurrentDirectory] = useState('/workspace');
   const [terminalHeight, setTerminalHeight] = useState(320); // 320px = h-80
   const [isResizing, setIsResizing] = useState(false);
-  
+
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const resizeRef = useRef<HTMLDivElement>(null);
@@ -58,12 +58,12 @@ const Terminal: React.FC<TerminalProps> = ({ theme, isVisible, onClose }) => {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing) return;
-      
+
       const windowHeight = window.innerHeight;
       const newHeight = windowHeight - e.clientY;
       const minHeight = 150; // Increased minimum height
       const maxHeight = windowHeight * 0.8;
-      
+
       setTerminalHeight(Math.max(minHeight, Math.min(maxHeight, newHeight)));
     };
 
@@ -106,7 +106,7 @@ const Terminal: React.FC<TerminalProps> = ({ theme, isVisible, onClose }) => {
   const executeCommand = (command: string) => {
     // Add input to terminal
     addLine(`${currentDirectory}$ ${command}`, 'input');
-    
+
     // Add to history
     if (command.trim()) {
       setCommandHistory(prev => [...prev, command]);
@@ -304,50 +304,44 @@ const Terminal: React.FC<TerminalProps> = ({ theme, isVisible, onClose }) => {
   if (!isVisible) return null;
 
   return (
-    <div 
-      className={`border-t flex flex-col ${
-        theme === 'dark' ? 'bg-black border-gray-700' : 'bg-white border-gray-300'
-      }`}
+    <div
+      className={`border-t flex flex-col ${theme === 'dark' ? 'bg-black border-gray-700' : 'bg-white border-gray-300'
+        }`}
       style={{ height: `${terminalHeight}px` }}
     >
       {/* Resize Handle */}
       <div
         ref={resizeRef}
         onMouseDown={handleResizeStart}
-        className={`h-1 cursor-ns-resize terminal-resize-handle transition-colors ${
-          theme === 'dark' ? 'bg-gray-600 hover:bg-blue-400' : 'bg-gray-300 hover:bg-blue-500'
-        } ${isResizing ? 'bg-blue-500' : ''}`}
+        className={`h-1 cursor-ns-resize terminal-resize-handle transition-colors ${theme === 'dark' ? 'bg-gray-600 hover:bg-blue-400' : 'bg-gray-300 hover:bg-blue-500'
+          } ${isResizing ? 'bg-blue-500' : ''}`}
         title="Drag to resize terminal"
       />
-      
+
       {/* Terminal Header */}
-      <div className={`flex items-center justify-between px-3 py-2 border-b ${
-        theme === 'dark' ? 'bg-black border-gray-700' : 'bg-gray-100 border-gray-300'
-      }`}>
+      <div className={`flex items-center justify-between px-3 py-2 border-b ${theme === 'dark' ? 'bg-black border-gray-700' : 'bg-gray-100 border-gray-300'
+        }`}>
         <div className="flex items-center space-x-2">
           <TerminalIcon size={16} />
           <span className="text-sm font-medium">Terminal</span>
         </div>
         <div className="flex items-center space-x-1">
           <button
-            className={`p-1 rounded hover:bg-opacity-80 ${
-              theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
-            }`}
+            className={`p-1 rounded hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
+              }`}
           >
             <Minus size={14} />
           </button>
           <button
-            className={`p-1 rounded hover:bg-opacity-80 ${
-              theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
-            }`}
+            className={`p-1 rounded hover:bg-opacity-80 ${theme === 'dark' ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
+              }`}
           >
             <Square size={14} />
           </button>
           <button
             onClick={onClose}
-            className={`p-1 rounded hover:bg-red-500 hover:text-white ${
-              theme === 'dark' ? 'hover:bg-red-600' : 'hover:bg-red-500'
-            }`}
+            className={`p-1 rounded hover:bg-red-500 hover:text-white ${theme === 'dark' ? 'hover:bg-red-600' : 'hover:bg-red-500'
+              }`}
           >
             <X size={14} />
           </button>
@@ -357,29 +351,26 @@ const Terminal: React.FC<TerminalProps> = ({ theme, isVisible, onClose }) => {
       {/* Terminal Content */}
       <div
         ref={terminalRef}
-        className={`flex-1 p-3 overflow-y-auto font-mono text-sm ${
-          theme === 'dark' ? 'bg-black text-green-400' : 'bg-gray-50 text-gray-800'
-        }`}
+        className={`flex-1 p-3 overflow-y-auto font-mono text-sm ${theme === 'dark' ? 'bg-black text-green-400' : 'bg-gray-50 text-gray-800'
+          }`}
       >
         {lines.map(line => (
           <div
             key={line.id}
-            className={`mb-1 ${
-              line.type === 'error' 
-                ? 'text-red-400' 
-                : line.type === 'input'
+            className={`mb-1 ${line.type === 'error'
+              ? 'text-red-400'
+              : line.type === 'input'
                 ? theme === 'dark' ? 'text-white' : 'text-gray-900'
                 : theme === 'dark' ? 'text-green-400' : 'text-gray-700'
-            }`}
+              }`}
           >
             {line.content}
           </div>
         ))}
-        
+
         {/* Input Line */}
-        <div className={`flex items-center ${
-          theme === 'dark' ? 'text-white' : 'text-gray-900'
-        }`}>
+        <div className={`flex items-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'
+          }`}>
           <span className="mr-2">{currentDirectory}$</span>
           <input
             ref={inputRef}
