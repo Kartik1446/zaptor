@@ -17,5 +17,46 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Custom scrollbar for dark theme */
+.dark-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark-scrollbar::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+.dark-scrollbar::-webkit-scrollbar-thumb {
+  background: #6b7280;
+  border-radius: 4px;
+}
+
+.dark-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Light theme scrollbar */
+.light-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.light-scrollbar::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+.light-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+.light-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }
