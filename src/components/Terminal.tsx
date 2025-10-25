@@ -21,7 +21,7 @@ const Terminal: React.FC<TerminalProps> = ({ theme, isVisible, onClose }) => {
     {
       id: '1',
       type: 'output',
-      content: 'Welcome to Zapterminal ghost',
+      content: 'Welcome to Zapterminal',
       timestamp: new Date()
     },
     {
@@ -323,7 +323,7 @@ const Terminal: React.FC<TerminalProps> = ({ theme, isVisible, onClose }) => {
         }`}>
         <div className="flex items-center space-x-2">
           <TerminalIcon size={16} />
-          <span className="text-sm font-medium">Terminal</span>
+          <span className="text-sm font-medium">Zapterminal</span>
         </div>
         <div className="flex items-center space-x-1">
           <button

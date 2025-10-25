@@ -255,10 +255,10 @@ const IDE: React.FC = () => {
           <img
             src="/favicon.ico"
             alt="Zaptor Logo"
-            className="w-12 h-12 ml-1"
+            className="w-16 h-18 ml-1"
           />
           <div className="flex flex-col">
-            <h1 className="text-xl font-bold">Zaptor</h1>
+            <h1 className="text-xl font-bold">Zaptor Gen1</h1>
             <span className="text-xs opacity-70">by Kartik Bhardwaj</span>
           </div>
           <div className="flex items-center space-x-2 text-sm relative">

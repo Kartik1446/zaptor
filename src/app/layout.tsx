@@ -12,7 +12,6 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
-
 export const metadata: Metadata = {
   title: "Zaptor",
   description: "A fully-featured online code editor with syntax highlighting, file management, and terminal",

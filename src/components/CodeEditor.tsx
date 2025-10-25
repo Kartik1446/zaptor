@@ -138,8 +138,8 @@ console.log("Filtered (> 2):", filtered);
       base: 'vs-dark',
       inherit: false,
       rules: [
-        // Base text
-        { token: '', foreground: 'D4D4D4' },
+        // Base text - ensure default text is white
+        { token: '', foreground: 'FFFFFF' },
         
         // Comments - Green and italic
         { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },
@@ -199,11 +199,11 @@ console.log("Filtered (> 2):", filtered);
         { token: 'support.variable.property', foreground: '9CDCFE' },
         { token: 'variable.other.object.property', foreground: '9CDCFE' },
         
-        // Operators and punctuation
-        { token: 'keyword.operator', foreground: 'D4D4D4' },
-        { token: 'punctuation', foreground: 'D4D4D4' },
-        { token: 'meta.brace', foreground: 'D4D4D4' },
-        { token: 'punctuation.definition.block', foreground: 'D4D4D4' },
+        // Operators and punctuation - ensure they are white instead of gray
+        { token: 'keyword.operator', foreground: 'FFFFFF' },
+        { token: 'punctuation', foreground: 'FFFFFF' },
+        { token: 'meta.brace', foreground: 'FFFFFF' },
+        { token: 'punctuation.definition.block', foreground: 'FFFFFF' },
         
         // HTML/XML tags
         { token: 'entity.name.tag', foreground: '569CD6' },
@@ -225,11 +225,23 @@ console.log("Filtered (> 2):", filtered);
         
         // Template literals
         { token: 'punctuation.definition.template-expression', foreground: 'C586C0' },
-        { token: 'meta.template.expression', foreground: 'D4D4D4' },
+        { token: 'meta.template.expression', foreground: 'FFFFFF' },
         
         // Decorators
         { token: 'meta.decorator', foreground: 'DCDCAA' },
-        { token: 'punctuation.decorator', foreground: 'DCDCAA' }
+        { token: 'punctuation.decorator', foreground: 'DCDCAA' },
+        
+        // Catch any remaining tokens that might be black/dark
+        { token: 'delimiter', foreground: 'FFFFFF' },
+        { token: 'delimiter.bracket', foreground: 'FFFFFF' },
+        { token: 'delimiter.parenthesis', foreground: 'FFFFFF' },
+        { token: 'delimiter.square', foreground: 'FFFFFF' },
+        { token: 'delimiter.curly', foreground: 'FFFFFF' },
+        { token: 'punctuation.separator', foreground: 'FFFFFF' },
+        { token: 'punctuation.terminator', foreground: 'FFFFFF' },
+        { token: 'punctuation.accessor', foreground: 'FFFFFF' },
+        { token: 'meta.embedded', foreground: 'FFFFFF' },
+        { token: 'source', foreground: 'FFFFFF' }
       ],
       colors: {
         'editor.background': '#000000',

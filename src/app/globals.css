@@ -130,6 +130,16 @@ body {
   border-color: #ffffff !important;
 }
 
+/* Force only default/plain text to be white, preserve syntax highlighting */
+.monaco-editor .mtk1 {
+  color: #ffffff !important;
+}
+
+/* Set default editor foreground to white */
+.monaco-editor {
+  color: #ffffff !important;
+}
+
 /* Terminal resize handle */
 .terminal-resize-handle {
   position: relative;
